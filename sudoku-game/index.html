@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sudoku</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <h1>Sudoku</h1>
+      <label class="level">
+        <span class="sr-only">Difficulty</span>
+        <select id="difficulty">
+          <option value="easy">Easy</option>
+          <option value="medium" selected>Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+      </label>
+    </header>
+
+    <section class="stats" aria-live="polite">
+      <div>Time <strong id="timer">00:00</strong></div>
+      <div>Mistakes <strong id="mistakes">0</strong></div>
+      <div>Hints <strong id="hints">0</strong></div>
+    </section>
+
+    <div id="board" class="board" aria-label="Sudoku board"></div>
+
+    <section class="tools">
+      <button id="undo" type="button">Undo</button>
+      <button id="erase" type="button">Erase</button>
+      <button id="notes" type="button" aria-pressed="false">Notes: off</button>
+      <button id="hint" type="button">Hint</button>
+    </section>
+
+    <section id="pad" class="pad" aria-label="Number pad"></section>
+
+    <button id="new" class="new" type="button">New game</button>
+
+    <p class="help">Tip: use your keyboard. 1-9 to fill, arrow keys to move, N for notes, Backspace to erase.</p>
+  </main>
+
+  <div id="win" class="overlay" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="win-title">
+      <h2 id="win-title">Solved!</h2>
+      <p id="win-text"></p>
+      <button id="again" type="button">Play again</button>
+    </div>
+  </div>
+
+  <script src="sudoku.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
