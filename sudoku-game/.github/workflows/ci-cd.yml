@@ -1,0 +1,91 @@
+name: Sudoku CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+
+  # =========================
+  # CI - Test
+  # =========================
+  test:
+    name: Test Sudoku Game
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Check JavaScript syntax
+        run: |
+          node --check sudoku.js
+          node --check game.js
+
+      - name: Verify required files
+        run: |
+          test -f index.html
+          test -f style.css
+          test -f sudoku.js
+          test -f game.js
+          echo "All required Sudoku files are present."
+
+  # =========================
+  # CD - Deploy
+  # =========================
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: test
+
+    if: github.event_name != 'pull_request'
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Create deployment folder
+        run: |
+          mkdir dist
+          cp index.html dist/
+          cp style.css dist/
+          cp sudoku.js dist/
+          cp game.js dist/
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload website
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
