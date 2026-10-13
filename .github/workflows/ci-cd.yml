@@ -1,3 +1,4 @@
+
 name: Sudoku CI/CD
 
 on:
@@ -8,7 +9,7 @@ on:
   pull_request:
     branches:
       - main
-      
+
   workflow_dispatch:
 
 permissions:
@@ -17,11 +18,10 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: false
 
 jobs:
-
   # =========================
   # CI - Test
   # =========================
@@ -36,19 +36,19 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Check JavaScript syntax
         run: |
-          node --check sudoku.js
-          node --check game.js
+          node --check sudoku-game/sudoku.js
+          node --check sudoku-game/game.js
 
       - name: Verify required files
         run: |
-          test -f index.html
-          test -f style.css
-          test -f sudoku.js
-          test -f game.js
+          test -f sudoku-game/index.html
+          test -f sudoku-game/style.css
+          test -f sudoku-game/sudoku.js
+          test -f sudoku-game/game.js
           echo "All required Sudoku files are present."
 
   # =========================
@@ -57,9 +57,7 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     needs: test
-
     if: github.event_name != 'pull_request'
-
     runs-on: ubuntu-latest
 
     environment:
@@ -73,10 +71,10 @@ jobs:
       - name: Create deployment folder
         run: |
           mkdir dist
-          cp index.html dist/
-          cp style.css dist/
-          cp sudoku.js dist/
-          cp game.js dist/
+          cp sudoku-game/index.html dist/
+          cp sudoku-game/style.css dist/
+          cp sudoku-game/sudoku.js dist/
+          cp sudoku-game/game.js dist/
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
